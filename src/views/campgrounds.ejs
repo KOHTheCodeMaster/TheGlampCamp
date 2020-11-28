@@ -1,0 +1,16 @@
+<%- include("partials/header"); %>
+
+<h1>All The Camps:</h1>
+
+<!--Iterate campData & display camp id & name-->
+<ul>
+    <% campData.forEach(function (camp) { %>
+        <li>
+            [<%= camp.campId %>] - <%= camp.name %>
+        </li>
+    <% }) %>
+</ul>
+
+<a href="/">Go To Home Page</a>
+
+<%- include("partials/footer"); %>
