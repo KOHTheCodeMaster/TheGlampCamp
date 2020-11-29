@@ -1,0 +1,27 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    color: white;
+}
+
+/*
+img {
+    width: 100%;
+}
+*/
+
+#campground-thumbnail {
+    background-color: transparent;
+    margin-top: 1em;
+}
+
+.jumbo-text {
+    font-size: 1.5em;
+    font-weight: lighter;
+}

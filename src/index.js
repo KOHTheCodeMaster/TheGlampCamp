@@ -13,9 +13,46 @@ app.set("view engine", "ejs");
 //  --------------------------------------------------
 
 let campData = [
-    {name: "Wild Woods", campId: 101},
-    {name: "High Hikers", campId: 102},
-    {name: "Fun Forest", campId: 103}
+    {
+        name: "Wild Woods",
+        campId: 101,
+        imageUrl: "https://images.pexels.com/photos/2212570/pexels-photo-2212570.jpeg"
+    },
+    {
+        name: "Fun Forest",
+        campId: 102,
+        imageUrl: "https://images.pexels.com/photos/756780/pexels-photo-756780.jpeg"
+    },
+    {
+        name: "High Hikers",
+        campId: 103,
+        imageUrl: "https://images.pexels.com/photos/2819557/pexels-photo-2819557.jpeg"
+    },
+    {
+        name: "Sang Giri",
+        campId: 104,
+        imageUrl: "https://images.pexels.com/photos/2819554/pexels-photo-2819554.jpeg"
+    },
+    {
+        name: "Wild Woods",
+        campId: 105,
+        imageUrl: "https://images.pexels.com/photos/2212570/pexels-photo-2212570.jpeg"
+    },
+    {
+        name: "Fun Forest",
+        campId: 106,
+        imageUrl: "https://images.pexels.com/photos/756780/pexels-photo-756780.jpeg"
+    },
+    {
+        name: "High Hikers",
+        campId: 107,
+        imageUrl: "https://images.pexels.com/photos/2819557/pexels-photo-2819557.jpeg"
+    },
+    {
+        name: "Sang Giri",
+        campId: 108,
+        imageUrl: "https://images.pexels.com/photos/2819554/pexels-photo-2819554.jpeg"
+    }
 ];
 
 

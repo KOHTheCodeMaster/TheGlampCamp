@@ -1,16 +1,39 @@
 <%- include("partials/header"); %>
 
-<h1>All The Camps:</h1>
+<link rel="stylesheet" href="/stylesheets/campgrounds.css">
 
-<!--Iterate campData & display camp id & name-->
-<ul>
-    <% campData.forEach(function (camp) { %>
-        <li>
-            [<%= camp.campId %>] - <%= camp.name %>
-        </li>
-    <% }) %>
-</ul>
+<div class="container">
 
-<a href="/">Go To Home Page</a>
+    <!--  Jumbotron  -->
+    <header>
+        <div class="jumbotron bg-dark">
+            <div class="container">
+                <h1 class="display-3">Welcome To The Glamp Camp!</h1>
+                <p class="jumbo-text">Explore the exclusively hand-picked campgrounds from all over the world</p>
+                <a class="btn btn-primary btn-large" href="/campgrounds">Add New Campground</a>
+                <a class="btn btn-warning btn-large" href="/">Home Page</a>
+            </div>
+        </div>
+    </header>
+
+    <!--  Gallery Campgrounds  -->
+    <div class="row">
+
+        <!-- Iterate campData & display camp image & name -->
+        <% campData.forEach(function (camp) { %>
+            <div class="col-md-4 col-sm-6">
+                <div id="campground-thumbnail" class="img-fluid img-thumbnail">
+                    <img class="w-100" src="<%= camp.imageUrl %>" alt="">
+                    <h4 class="text-center m-0">
+                        <%= camp.name %>
+                    </h4>
+                </div>
+            </div>
+        <% }) %>
+
+    </div>
+
+</div>
+
 
 <%- include("partials/footer"); %>
