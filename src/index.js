@@ -1,10 +1,11 @@
 let express = require("express");
+let bodyparser = require("body-parser");
 let app = express();
 
 //  App Configuration
 //  --------------------------------------------------
 
-// app.use(bodyparser.urlencoded({extended: true}));
+app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
@@ -67,6 +68,26 @@ app.get("/", function (req, res) {
 //  Campgrounds page route
 app.get("/campgrounds", function (req, res) {
     res.render("campgrounds", {campData: campData});
+});
+
+//  Campgrounds post page route
+app.post("/campgrounds", function (req, res) {
+
+    //  Retrieve request parameters
+    let name = req.body.name;
+    let imageUrl = req.body.imageUrl;
+    let newCamp = {name: name, imageUrl: imageUrl};
+
+    //  Add new item to campData
+    campData.push(newCamp);
+
+    res.render("campgrounds", {campData: campData});
+
+});
+
+//  Campgrounds page route
+app.get("/campgrounds/new", function (req, res) {
+    res.render("new");
 });
 
 
