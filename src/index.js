@@ -1,6 +1,7 @@
-let express = require("express");
-let bodyparser = require("body-parser");
-let app = express();
+let express = require("express"),
+    mongoose = require("mongoose"),
+    bodyparser = require("body-parser"),
+    app = express();
 
 //  App Configuration
 //  --------------------------------------------------
@@ -10,51 +11,25 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 
-//  Setup Data
+//  Setup MongoDB Database
 //  --------------------------------------------------
 
-let campData = [
+//  Establish Connection with DB
+mongoose.connect("mongodb://localhost:27017/TheGlampCamp", function (err) {
+    if (err) console.log(err);
+    else console.log("Connection To MongoDB Established successfully.")
+});
+
+//  Define Schema
+let campgroundSchema = mongoose.Schema(
     {
-        name: "Wild Woods",
-        campId: 101,
-        imageUrl: "https://images.pexels.com/photos/2212570/pexels-photo-2212570.jpeg"
-    },
-    {
-        name: "Fun Forest",
-        campId: 102,
-        imageUrl: "https://images.pexels.com/photos/756780/pexels-photo-756780.jpeg"
-    },
-    {
-        name: "High Hikers",
-        campId: 103,
-        imageUrl: "https://images.pexels.com/photos/2819557/pexels-photo-2819557.jpeg"
-    },
-    {
-        name: "Sang Giri",
-        campId: 104,
-        imageUrl: "https://images.pexels.com/photos/2819554/pexels-photo-2819554.jpeg"
-    },
-    {
-        name: "Wild Woods",
-        campId: 105,
-        imageUrl: "https://images.pexels.com/photos/2212570/pexels-photo-2212570.jpeg"
-    },
-    {
-        name: "Fun Forest",
-        campId: 106,
-        imageUrl: "https://images.pexels.com/photos/756780/pexels-photo-756780.jpeg"
-    },
-    {
-        name: "High Hikers",
-        campId: 107,
-        imageUrl: "https://images.pexels.com/photos/2819557/pexels-photo-2819557.jpeg"
-    },
-    {
-        name: "Sang Giri",
-        campId: 108,
-        imageUrl: "https://images.pexels.com/photos/2819554/pexels-photo-2819554.jpeg"
+        name: String,
+        imageUrl: String
     }
-];
+);
+
+//  Define Campground Model (Collection)
+let Campground = mongoose.model("Campground", campgroundSchema);
 
 
 //  Setup Routes
@@ -67,7 +42,17 @@ app.get("/", function (req, res) {
 
 //  Campgrounds page route
 app.get("/campgrounds", function (req, res) {
-    res.render("campgrounds", {campData: campData});
+
+    //  Find all the campgrounds from DB
+    Campground.find({}, function (err, campgrounds) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        //  Render all the campgrounds fetched from DB
+        res.render("campgrounds", {campgrounds: campgrounds});
+    });
+
 });
 
 //  Campgrounds post page route
@@ -78,10 +63,17 @@ app.post("/campgrounds", function (req, res) {
     let imageUrl = req.body.imageUrl;
     let newCamp = {name: name, imageUrl: imageUrl};
 
-    //  Add new item to campData
-    campData.push(newCamp);
+    //  Add new item to campgrounds collection
+    Campground.create(newCamp, function (err, campground) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log("New Campground Added." + campground);
+        //  Redirect to /campgrounds
+        res.redirect("campgrounds");
 
-    res.render("campgrounds", {campData: campData});
+    });
 
 });
 
