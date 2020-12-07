@@ -24,7 +24,8 @@ mongoose.connect("mongodb://localhost:27017/TheGlampCamp", function (err) {
 let campgroundSchema = mongoose.Schema(
     {
         name: String,
-        imageUrl: String
+        imageUrl: String,
+        description: String
     }
 );
 
@@ -40,8 +41,8 @@ app.get("/", function (req, res) {
     res.render("home");
 });
 
-//  Campgrounds page route
-app.get("/campgrounds", function (req, res) {
+// INDEX - Campgrounds index page route
+app.get("/index", function (req, res) {
 
     //  Find all the campgrounds from DB
     Campground.find({}, function (err, campgrounds) {
@@ -50,36 +51,43 @@ app.get("/campgrounds", function (req, res) {
             return;
         }
         //  Render all the campgrounds fetched from DB
-        res.render("campgrounds", {campgrounds: campgrounds});
+        res.render("index", {campgrounds: campgrounds});
     });
 
 });
 
-//  Campgrounds post page route
-app.post("/campgrounds", function (req, res) {
+//  CREATE - Campgrounds post page route
+app.post("/index", function (req, res) {
 
     //  Retrieve request parameters
-    let name = req.body.name;
-    let imageUrl = req.body.imageUrl;
-    let newCamp = {name: name, imageUrl: imageUrl};
+    let newCamp = {name: req.body.name, imageUrl: req.body.imageUrl, description: req.body.description};
 
     //  Add new item to campgrounds collection
     Campground.create(newCamp, function (err, campground) {
-        if (err) {
-            console.log(err);
-            return;
+        if (err) console.log(err);
+        else {
+            console.log("New Campground Added." + campground);
+            //  Redirect to /index
+            res.redirect("index");
         }
-        console.log("New Campground Added." + campground);
-        //  Redirect to /campgrounds
-        res.redirect("campgrounds");
-
     });
 
 });
 
-//  Campgrounds page route
-app.get("/campgrounds/new", function (req, res) {
+//  NEW - form for new campground
+app.get("/index/new", function (req, res) {
     res.render("new");
+});
+
+//  SHOW - particular campground by id
+app.get("/index/:id", function (req, res) {
+
+    let id = req.params.id;
+    Campground.findById(id, function (err, campground) {
+        if (err) console.log(err);
+        else res.render("show", {campground: campground});
+    });
+
 });
 
 
