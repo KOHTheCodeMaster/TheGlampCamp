@@ -1,6 +1,9 @@
 let express = require("express"),
     mongoose = require("mongoose"),
     bodyparser = require("body-parser"),
+    Campground = require("./models/campground"),
+    // Comment = require("./models/comment"),
+    seedDB = require("./seedDB"),
     app = express();
 
 //  App Configuration
@@ -10,27 +13,17 @@ app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-
 //  Setup MongoDB Database
 //  --------------------------------------------------
 
 //  Establish Connection with DB
-mongoose.connect("mongodb://localhost:27017/TheGlampCamp", function (err) {
+mongoose.connect("mongodb://localhost:27017/TheGlampCamp_v1_0_4", function (err) {
     if (err) console.log(err);
     else console.log("Connection To MongoDB Established successfully.")
 });
 
-//  Define Schema
-let campgroundSchema = mongoose.Schema(
-    {
-        name: String,
-        imageUrl: String,
-        description: String
-    }
-);
-
-//  Define Campground Model (Collection)
-let Campground = mongoose.model("Campground", campgroundSchema);
+//  Seed DB
+seedDB();
 
 
 //  Setup Routes
@@ -82,11 +75,11 @@ app.get("/index/new", function (req, res) {
 //  SHOW - particular campground by id
 app.get("/index/:id", function (req, res) {
 
-    let id = req.params.id;
-    Campground.findById(id, function (err, campground) {
-        if (err) console.log(err);
-        else res.render("show", {campground: campground});
-    });
+    Campground.findById(req.params.id).populate("comments")
+        .exec(function (err, campground) {
+            if (err) console.log(err);
+            else res.render("show", {campground: campground});
+        });
 
 });
 
