@@ -22,12 +22,12 @@
         <!-- Iterate campData & display camp image & name -->
         <% campgrounds.forEach(function (camp) { %>
             <div class="col-md-4 col-sm-6">
-                <div id="campground-thumbnail" class="img-fluid img-thumbnail">
+                <div id="campground-thumbnail" class="img-fluid img-thumbnail text-center">
                     <img class="w-100" src="<%= camp.imageUrl %>" alt="">
-                    <h4 class="text-center m-0">
+                    <h4 class="text-center m-2">
                         <%= camp.name %>
                     </h4>
-                    <a href="index/<%= camp._id %>" class="btn btn-info">More Info.</a>
+                    <a href="index/<%= camp._id %>" class="btn btn-info my-1">More Info.</a>
                 </div>
             </div>
         <% }) %>

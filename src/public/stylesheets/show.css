@@ -1,0 +1,17 @@
+
+.list-group .list-group-item {
+    font-size: 1em;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border-color: grey;
+}
+
+.list-group .list-group-item.active {
+    background-color: dodgerblue;
+    color: white;
+}
+
+.comment-header-border {
+    border: 1px solid grey;
+    border-bottom: none;
+}
