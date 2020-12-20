@@ -1,8 +1,11 @@
 let express = require("express"),
     mongoose = require("mongoose"),
     bodyparser = require("body-parser"),
+    passport = require("passport"),
+    LocalStrategy = require("passport-local"),
     Campground = require("./models/campground"),
     Comment = require("./models/comment"),
+    User = require("./models/user"),
     seedDB = require("./seedDB"),
     app = express();
 
@@ -13,11 +16,24 @@ app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
+//  Passport configuration
+app.use(require("express-session")({
+    secret: "This is the secret Key..!!",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 //  Setup MongoDB Database
 //  --------------------------------------------------
 
 //  Establish Connection with DB
-mongoose.connect("mongodb://localhost:27017/TheGlampCamp_v1_0_5", function (err) {
+mongoose.connect("mongodb://localhost:27017/TheGlampCamp_v1_0_6", function (err) {
     if (err) console.log(err);
     else console.log("Connection To MongoDB Established successfully.")
 });
@@ -118,6 +134,35 @@ app.post("/index/:id/comments", function (req, res) {
             res.redirect("/index/" + campground._id);
         });
 
+    });
+
+});
+
+
+//  ==============================
+//  REGISTER Routes
+//  ==============================
+
+//  Render Register form
+app.get("/register", function (req, res) {
+    res.render("user/register");
+});
+
+//  Register new user
+app.post("/register", function (req, res) {
+
+    let newUser = {username: req.body.username};
+
+    //  Register new user
+    User.register(newUser, req.body.password, function (err, user) {
+        if (err) {
+            console.log(err);
+            res.render("register");
+        }
+        //  Authenticate the user & redirect to /index
+        passport.authenticate("local")(req, res, function () {
+            res.redirect("/index");
+        });
     });
 
 });
