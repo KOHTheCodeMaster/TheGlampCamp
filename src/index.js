@@ -29,6 +29,12 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//  Common middleware which runs before each route to update currentUser for partials & other resources
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+});
+
 //  Setup MongoDB Database
 //  --------------------------------------------------
 
@@ -104,7 +110,7 @@ app.get("/index/:id", function (req, res) {
 //  ==============================
 
 //  NEW - form for new comment to be added to specific campground by id
-app.get("/index/:id/comments/new", function (req, res) {
+app.get("/index/:id/comments/new", isLoggedIn, function (req, res) {
     Campground.findById(req.params.id, function (err, campground) {
         if (err) console.log(err);
         else res.render("comment/new", {campground: campground});
@@ -112,7 +118,7 @@ app.get("/index/:id/comments/new", function (req, res) {
 });
 
 //  POST - new comment to the campground by id
-app.post("/index/:id/comments", function (req, res) {
+app.post("/index/:id/comments", isLoggedIn, function (req, res) {
 
     //  Find the specific campground by id
     Campground.findById(req.params.id, function (err, campground) {
@@ -166,6 +172,47 @@ app.post("/register", function (req, res) {
     });
 
 });
+
+
+//  ==============================
+//  LOGIN Routes
+//  ==============================
+
+//  Logout route
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/index");
+});
+
+//  Render Login form
+app.get("/login", function (req, res) {
+    res.render("user/login");
+});
+
+//  Register new user
+app.post("/login",
+    //  Authenticate login middleware
+    passport.authenticate("local", {
+        successRedirect: "/index",
+        failureRedirect: "/login"
+    }),
+    function (req, res) {
+        console.log("Logged In successful - " + req.user);
+    }
+);
+
+
+//  ==============================
+//  Middlewares
+//  ==============================
+
+//  Check User Logged In
+function isLoggedIn(req, res, next) {
+    //  If user is authenticated, continue executing the followed up method
+    if (req.isAuthenticated()) next();
+    //  If user ain't authenticated, redirect to /login
+    else res.redirect("/login");
+}
 
 
 //  Boot the Server

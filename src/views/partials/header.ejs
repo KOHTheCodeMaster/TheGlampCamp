@@ -25,9 +25,13 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="navbar-nav ml-auto">
-            <a class="nav-item nav-link" href="/index">Campgrounds <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="#">Login</a>
-            <a class="nav-item nav-link" href="/register">Register</a>
+            <% if(!currentUser) { %>
+                <a class="nav-item nav-link" href="/login">Login</a>
+                <a class="nav-item nav-link" href="/register">Register</a>
+            <% } else { %>
+                <a class="nav-item nav-link" href="#"> <%= currentUser.username %> </a>
+                <a class="nav-item nav-link" href="/logout">Logout</a>
+            <% } %>
         </div>
     </div>
 </nav>
