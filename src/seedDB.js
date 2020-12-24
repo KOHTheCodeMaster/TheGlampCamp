@@ -1,5 +1,6 @@
 let Campground = require("./models/campground"),
-    Comment = require("./models/comment");
+    Comment = require("./models/comment"),
+    User = require("./models/user");
 
 let data = [
     {
@@ -26,35 +27,81 @@ let data = [
 
 function seedDB() {
 
-    //  Remove All Campgrounds from DB
-    Campground.remove({}, function (err) {
+    let seedingUser = {username: "johndoe"};
+    let seedingUserPassword = "johndoe";
+
+    //  Remove Seeding User - John Doe
+    User.remove(seedingUser, function (err) {
+
         if (err) {
             console.log(err);
             return;
         }
+        /*
+                User.create(seedingUser, function (err, seedingUser) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    //  Update seedingUser id with seedingUser id
+                    seedingUser.id = seedingUser._id;
+                    console.log("Seeding User successfully created.\n" + seedingUser);
+                });
+        */
 
-        //  Insert the campgrounds in DB
-        data.forEach(function (seed) {
-            Campground.create(seed, function (err, campground) {
+        //  Add Default Seeding User - John Doe
+        User.register(seedingUser, seedingUserPassword, function (err, user) {
+            if (err) {
+                console.log(err);
+                res.render("register");
+            }
+            seedingUser.id = user._id;
+            console.log("Seeding User successfully created.\n" + user);
+
+            //  Remove All Campgrounds from DB
+            Campground.remove({}, function (err) {
                 if (err) {
                     console.log(err);
                     return;
                 }
 
-                //  Insert Sample Comment to each campground
-                Comment.create(
-                    {
-                        author: "John Doe",
-                        content: "Good One! :D"
-                    }, function (err, comment) {
-                        campground.comments.push(comment);
-                        campground.save(function (err) {
-                            if (err) console.log(err);
-                        });
-                    }
-                );
+                //  Insert the campgrounds in DB
+                data.forEach(function (seed) {
+                    Campground.create(seed, function (err, campground) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+
+                        //  Insert Sample Comment to each campground
+                        Comment.create(
+                            {
+                                author: {
+                                    username: seedingUser.username,
+                                    id: seedingUser.id
+                                },
+                                content: "Good One! :D"
+                            }, function (err, comment) {
+                                /*
+                                                            //  Add the user to the comment
+                                                            comment.author.username = seedingUser.username;
+                                                            comment.author.id = seedingUser.id;
+                                                            comment.save();
+                                */
+
+                                campground.comments.push(comment);
+                                campground.save(function (err) {
+                                    if (err) console.log(err);
+                                    console.log("Comment Saved : " + comment);
+                                });
+                            }
+                        );
+
+                    });
+                });
 
             });
+
         });
 
     });
