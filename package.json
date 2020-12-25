@@ -1,6 +1,6 @@
 {
   "name": "com.github.kohthecodemaster.theglampcamp",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "The Glamp Camp - 100 Days Of Code",
   "main": "index.js",
   "scripts": {

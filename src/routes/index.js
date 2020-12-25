@@ -21,10 +21,14 @@ router.get("/", function (req, res) {
 });
 
 //  CREATE - Campgrounds post page route
-router.post("/", function (req, res) {
+router.post("/", isLoggedIn, function (req, res) {
 
     //  Retrieve request parameters
-    let newCamp = {name: req.body.name, imageUrl: req.body.imageUrl, description: req.body.description};
+    let author = {
+        username: req.user.username,
+        id: req.user._id
+    }
+    let newCamp = {name: req.body.name, imageUrl: req.body.imageUrl, description: req.body.description, author: author};
 
     //  Add new item to campgrounds collection
     Campground.create(newCamp, function (err, campground) {
@@ -39,7 +43,7 @@ router.post("/", function (req, res) {
 });
 
 //  NEW - form for new campground
-router.get("/new", function (req, res) {
+router.get("/new", isLoggedIn, function (req, res) {
     res.render("campground/new");
 });
 
@@ -53,5 +57,22 @@ router.get("/:id", function (req, res) {
         });
 
 });
+
+
+//  ==============================
+//  Middlewares
+//  ==============================
+
+//  Check User Logged In
+function isLoggedIn(req, res, next) {
+    //  If user is authenticated, continue executing the followed up method
+    if (req.isAuthenticated()) {
+        console.log("\n\nLogged In.");
+        next();
+    }
+    //  If user ain't authenticated, redirect to /login
+    else res.redirect("/login");
+}
+
 
 module.exports = router;

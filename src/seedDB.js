@@ -67,6 +67,7 @@ function seedDB() {
 
                 //  Insert the campgrounds in DB
                 data.forEach(function (seed) {
+                    seed.author = seedingUser;
                     Campground.create(seed, function (err, campground) {
                         if (err) {
                             console.log(err);

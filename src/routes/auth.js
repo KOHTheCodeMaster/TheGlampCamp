@@ -64,18 +64,5 @@ router.post("/login",
     }
 );
 
-
-//  ==============================
-//  Middlewares
-//  ==============================
-
-//  Check User Logged In
-function isLoggedIn(req, res, next) {
-    //  If user is authenticated, continue executing the followed up method
-    if (req.isAuthenticated()) next();
-    //  If user ain't authenticated, redirect to /login
-    else res.redirect("/login");
-}
-
 module.exports = router;
 
