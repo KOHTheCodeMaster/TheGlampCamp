@@ -1,6 +1,6 @@
 {
   "name": "com.github.kohthecodemaster.theglampcamp",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "The Glamp Camp - 100 Days Of Code",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "method-override": "^3.0.0",
     "mongoose": "^5.11.3",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

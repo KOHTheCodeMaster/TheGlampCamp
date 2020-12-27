@@ -58,6 +58,35 @@ router.get("/:id", function (req, res) {
 
 });
 
+//  EDIT - show edit form for campground
+router.get("/:id/edit", function (req, res) {
+
+    Campground.findById(req.params.id, function (err, campground) {
+        if (err) console.log(err);
+        else res.render("campground/edit", {campground: campground});
+    });
+
+});
+
+//  PUT - update the particular campground by id
+router.put("/:id", function (req, res) {
+
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function (err, campground) {
+        if (err) console.log(err);
+        res.redirect("/index/" + campground._id);
+    });
+
+});
+
+//  DESTROY - delete the particular campground by id
+router.delete("/:id", function (req, res) {
+
+    Campground.findByIdAndRemove(req.params.id, function (err, campground) {
+        if (err) console.log(err);
+        res.redirect("/index/");
+    });
+
+});
 
 //  ==============================
 //  Middlewares

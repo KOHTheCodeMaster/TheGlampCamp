@@ -3,6 +3,7 @@ let express = require("express"),
     bodyparser = require("body-parser"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
+    methodOverride = require("method-override"),
     User = require("./models/user"),
     seedDB = require("./seedDB"),
     app = express();
@@ -18,6 +19,8 @@ let indexRoutes = require("./routes/index"),
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+// Override the http method POST via ?_method=PUT/DELETE/...
+app.use(methodOverride("_method"));
 
 //  Passport configuration
 app.use(require("express-session")({
