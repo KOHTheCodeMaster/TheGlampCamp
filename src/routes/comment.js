@@ -47,12 +47,73 @@ router.post("/", isLoggedIn, function (req, res) {
 });
 
 
+//  EDIT - show edit form for comment
+router.get("/:commentId/edit", checkCommentAuthorization, function (req, res) {
+
+    Campground.findById(req.params.id, function (err, campground) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        Comment.findById(req.params.commentId, function (err, comment) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.render("comment/edit", {campground: campground, comment: comment});
+        });
+
+    });
+
+});
+
+//  PUT - update the particular comment of the campground by id
+router.put("/:commentId", checkCommentAuthorization, function (req, res) {
+
+    Comment.findByIdAndUpdate(req.params.commentId, req.body.comment, function (err, comment) {
+        if (err) console.log(err);
+        res.redirect("/index/" + req.params.id);
+    });
+
+});
+
+//  DESTROY - delete the particular comment of the campground by id
+router.delete("/:commentId", checkCommentAuthorization, function (req, res) {
+
+    Comment.findByIdAndRemove(req.params.commentId, function (err, comment) {
+        if (err) console.log(err);
+        res.redirect("/index/" + req.params.id);
+    });
+
+});
+
 //  Check User Logged In
 function isLoggedIn(req, res, next) {
     //  If user is authenticated, continue executing the followed up method
     if (req.isAuthenticated()) next();
     //  If user ain't authenticated, redirect to /login
     else res.redirect("/login");
+}
+
+//  Check comment authorization
+function checkCommentAuthorization(req, res, next) {
+    //  If user is authenticated, continue executing the followed up method
+    if (req.isAuthenticated()) {
+
+        //  Find the campground
+        Comment.findById(req.params.commentId, function (err, comment) {
+            if (err) {
+                console.log(err);
+                res.redirect("back");
+            }
+            //  Check comment authorization of current user
+            if (comment.author.id.equals(req.user._id)) next();
+            else res.redirect("back");
+        });
+    }
+    //  If user ain't authenticated, redirect back to the last page
+    else res.redirect("back");
 }
 
 module.exports = router;

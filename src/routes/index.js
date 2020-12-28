@@ -59,7 +59,7 @@ router.get("/:id", function (req, res) {
 });
 
 //  EDIT - show edit form for campground
-router.get("/:id/edit", checkCampgroundOwnership, function (req, res) {
+router.get("/:id/edit", checkCampgroundAuthorization, function (req, res) {
 
     Campground.findById(req.params.id, function (err, campground) {
         if (err) console.log(err);
@@ -69,7 +69,7 @@ router.get("/:id/edit", checkCampgroundOwnership, function (req, res) {
 });
 
 //  PUT - update the particular campground by id
-router.put("/:id", checkCampgroundOwnership, function (req, res) {
+router.put("/:id", checkCampgroundAuthorization, function (req, res) {
 
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, function (err, campground) {
         if (err) console.log(err);
@@ -79,7 +79,7 @@ router.put("/:id", checkCampgroundOwnership, function (req, res) {
 });
 
 //  DESTROY - delete the particular campground by id
-router.delete("/:id", checkCampgroundOwnership, function (req, res) {
+router.delete("/:id", checkCampgroundAuthorization, function (req, res) {
 
     Campground.findByIdAndRemove(req.params.id, function (err, campground) {
         if (err) console.log(err);
@@ -100,8 +100,8 @@ function isLoggedIn(req, res, next) {
     else res.redirect("/login");
 }
 
-//  Check Campground Ownership
-function checkCampgroundOwnership(req, res, next) {
+//  Check Campground Authorization
+function checkCampgroundAuthorization(req, res, next) {
     //  If user is authenticated, continue executing the followed up method
     if (req.isAuthenticated()) {
 

@@ -65,6 +65,23 @@
                                 <div class="col-md-12">
                                     <span class="float-left"><strong><%= comment.author.username %></strong></span>
                                     <span class="float-right">3 days ago</span>
+
+                                    <!-- Show Buttons only if currentUser is the author of the comment -->
+                                    <% if (currentUser && comment.author.id.equals(currentUser._id)) { %>
+
+                                        <!-- EDIT & DELETE Campground Btn Form -->
+                                        <form class="float-right mr-1"
+                                              action="/index/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE"
+                                              method="POST">
+                                            <div class="form-group">
+                                                <a class="btn btn-info"
+                                                   href="/index/<%= campground._id %>/comments/<%= comment._id %>/edit">EDIT</a>
+                                                <button type="submit" class="btn btn-danger">DELETE</button>
+                                            </div>
+                                        </form>
+
+                                    <% } %>
+
                                 </div>
                             </div>
                             <p><em><%= comment.content %></em></p>
