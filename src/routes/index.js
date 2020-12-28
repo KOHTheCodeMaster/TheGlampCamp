@@ -59,7 +59,7 @@ router.get("/:id", function (req, res) {
 });
 
 //  EDIT - show edit form for campground
-router.get("/:id/edit", function (req, res) {
+router.get("/:id/edit", checkCampgroundOwnership, function (req, res) {
 
     Campground.findById(req.params.id, function (err, campground) {
         if (err) console.log(err);
@@ -69,7 +69,7 @@ router.get("/:id/edit", function (req, res) {
 });
 
 //  PUT - update the particular campground by id
-router.put("/:id", function (req, res) {
+router.put("/:id", checkCampgroundOwnership, function (req, res) {
 
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, function (err, campground) {
         if (err) console.log(err);
@@ -79,7 +79,7 @@ router.put("/:id", function (req, res) {
 });
 
 //  DESTROY - delete the particular campground by id
-router.delete("/:id", function (req, res) {
+router.delete("/:id", checkCampgroundOwnership, function (req, res) {
 
     Campground.findByIdAndRemove(req.params.id, function (err, campground) {
         if (err) console.log(err);
@@ -95,12 +95,29 @@ router.delete("/:id", function (req, res) {
 //  Check User Logged In
 function isLoggedIn(req, res, next) {
     //  If user is authenticated, continue executing the followed up method
-    if (req.isAuthenticated()) {
-        console.log("\n\nLogged In.");
-        next();
-    }
+    if (req.isAuthenticated()) next();
     //  If user ain't authenticated, redirect to /login
     else res.redirect("/login");
+}
+
+//  Check Campground Ownership
+function checkCampgroundOwnership(req, res, next) {
+    //  If user is authenticated, continue executing the followed up method
+    if (req.isAuthenticated()) {
+
+        //  Find the campground
+        Campground.findById(req.params.id, function (err, campground) {
+            if (err) {
+                console.log(err);
+                res.redirect("back");
+            }
+            //  Check authorization of current user
+            if (campground.author.id.equals(req.user._id)) next();
+            else res.redirect("back");
+        });
+    }
+    //  If user ain't authenticated, redirect back to the last page
+    else res.redirect("back");
 }
 
 

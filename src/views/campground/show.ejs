@@ -32,13 +32,18 @@
                     <p><%= campground.description %></p>
                     <p><em>Submitted By: <%= campground.author.username %></em></p>
 
-                    <!-- EDIT & DELETE Campground Btn Form -->
-                    <form action="/index/<%= campground._id %>?_method=DELETE" method="POST">
-                        <div class="form-group">
-                            <a class="btn btn-info" href="/index/<%= campground._id %>/edit">EDIT</a>
-                            <button type="submit" class="btn btn-danger">DELETE</button>
-                        </div>
-                    </form>
+                    <!-- Show Buttons only if currentUser is the author of the campground -->
+                    <% if (currentUser && campground.author.id.equals(currentUser._id)) { %>
+
+                        <!-- EDIT & DELETE Campground Btn Form -->
+                        <form action="/index/<%= campground._id %>?_method=DELETE" method="POST">
+                            <div class="form-group">
+                                <a class="btn btn-info" href="/index/<%= campground._id %>/edit">EDIT</a>
+                                <button type="submit" class="btn btn-danger">DELETE</button>
+                            </div>
+                        </form>
+
+                    <% } %>
                 </div>
 
             </div>
